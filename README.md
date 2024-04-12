@@ -1,9 +1,9 @@
-# git-logger-template
+# git-logger
 
-[![PyPI](https://img.shields.io/pypi/v/git-logger-template.svg)](https://pypi.org/project/git-logger-template/)
-[![Tests](https://github.com/LVG77/git-logger-template/actions/workflows/test.yml/badge.svg)](https://github.com/LVG77/git-logger-template/actions/workflows/test.yml)
-[![Changelog](https://img.shields.io/github/v/release/LVG77/git-logger-template?include_prereleases&label=changelog)](https://github.com/LVG77/git-logger-template/releases)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/LVG77/git-logger-template/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/git-logger.svg)](https://pypi.org/project/git-logger/)
+[![Tests](https://github.com/LVG77/git-logger/actions/workflows/test.yml/badge.svg)](https://github.com/LVG77/git-logger/actions/workflows/test.yml)
+[![Changelog](https://img.shields.io/github/v/release/LVG77/git-logger?include_prereleases&label=changelog)](https://github.com/LVG77/git-logger/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/LVG77/git-logger/blob/main/LICENSE)
 
 null
 
