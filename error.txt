@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.10.12, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/lyubomirgeorgiev/Documents/git-logger
+configfile: pyproject.toml
+plugins: anyio-4.3.0
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_cli.py ______________________
+tests/test_cli.py:7: in <module>
+    from git_logger.cli import cli
+git_logger/cli.py:29: in <module>
+    def cli(file_path, db_name, table_name, repo_path):
+.venv/lib/python3.10/site-packages/click/decorators.py:373: in decorator
+    _param_memo(f, cls(param_decls, **attrs))
+.venv/lib/python3.10/site-packages/click/core.py:2536: in __init__
+    super().__init__(param_decls, type=type, multiple=multiple, **attrs)
+.venv/lib/python3.10/site-packages/click/core.py:2114: in __init__
+    self.type: types.ParamType = types.convert_type(type, default)
+.venv/lib/python3.10/site-packages/click/types.py:1049: in convert_type
+    raise AssertionError(
+E   AssertionError: Attempted to use an uninstantiated parameter type (<class 'click.types.Path'>).
+=========================== short test summary info ============================
+ERROR tests/test_cli.py - AssertionError: Attempted to use an uninstantiated ...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.13s ===============================
