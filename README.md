@@ -5,7 +5,7 @@
 [![Changelog](https://img.shields.io/github/v/release/LVG77/git-logger?include_prereleases&label=changelog)](https://github.com/LVG77/git-logger/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/LVG77/git-logger/blob/main/LICENSE)
 
-null
+Python package and CLI tool to log the historical versions of a file preserved in git repository to a DuckDB database.
 
 ## Installation
 
