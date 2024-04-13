@@ -7,6 +7,8 @@
 
 Python package and CLI tool to log the historical versions of a file preserved in git repository to a DuckDB database.
 
+The package is influenced and inspired heavily by Simon Willison's [git-history](https://github.com/simonw/git-history) package.
+
 ## Installation
 
 Install this library using `pip`:
