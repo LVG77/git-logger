@@ -18,6 +18,7 @@ def test_cli_json(tmpdir, git_repo):
     with open(json_file, "w") as f:
         json.dump(data, f)
 
+    git_repo.git.checkout('-b', 'main')  # Create and checkout the 'main' branch
     git_repo.index.add([json_file])
     git_repo.index.commit("First commit")
 
@@ -45,6 +46,7 @@ def test_cli_csv(tmpdir, git_repo):
         writer = csv.writer(f)
         writer.writerows(data)
 
+    git_repo.git.checkout('-b', 'main')  # Create and checkout the 'main' branch
     git_repo.index.add([csv_file])
     git_repo.index.commit("First commit")
 
