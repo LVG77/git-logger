@@ -97,6 +97,12 @@ Usage:
 git-log [OPTIONS] FILE_PATH DB_NAME
 ```
 
+You can run the `git-log` utility without installation using `uvx` tool from `uv` like so:
+
+```bash
+uvx --from git-logger git-log path/to/your/file.json file_history.db --table_name my_table
+```
+
 Arguments:
 - `FILE_PATH`: The path to the file in the Git repository.
 - `DB_NAME`: The name of the DuckDB database file.
