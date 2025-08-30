@@ -23,8 +23,14 @@ from .git_history import GitLogger
     default=".",
     help="The path to the Git repository",
 )
+@click.option(
+    "--flexible-schema",
+    is_flag=True,
+    default=False,
+    help="Store JSON data as JSON column type instead of individual columns",
+)
 @click.version_option()
-def cli(file_path, db_name, table_name, repo_path):
+def cli(file_path, db_name, table_name, repo_path, flexible_schema):
     """
     Retrieves the git history of the specified file, parses its content,
     and inserts the data into the DuckDB database.
@@ -43,6 +49,7 @@ def cli(file_path, db_name, table_name, repo_path):
         filepath=str(file_path),
         repo_path=repo_path,
         data_type=data_type,
+        flexible_schema=flexible_schema,
     )
     logger.log_git_history()
     click.echo(f"Git history has been logged to {db_name}.{table_name}")

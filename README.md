@@ -104,14 +104,32 @@ Arguments:
 Options:
 - `--table_name TEXT`: The name of the table to store the data (default is "hist").
 - `--repo_path TEXT`: The path to the Git repository (default is the current directory).
+- `--flexible-schema`: Store JSON data as JSON column type instead of individual columns (default is False).
 - `--version`: Show the version and exit.
 
-Example:
+Examples:
 ```
 git-log path/to/your/file.json file_history.db --table_name my_table
 ```
 
 This will retrieve the git history of the `file.json` file in the Git repository located at the current directory, parse the JSON content, and insert the data into the `my_table` table in the `file_history.db` DuckDB database.
+
+```
+git-log path/to/your/file.json file_history.db --table_name my_table --flexible-schema
+```
+
+This will use the flexible schema mode, storing JSON data with inconsistent structures as a single JSON column instead of creating individual columns. This is useful when your JSON file contains objects with varying keys across different git commits.
+
+### Flexible Schema Mode
+
+When working with JSON files that have inconsistent schemas across different git commits (e.g., some objects have different keys), you can use the `--flexible-schema` flag. This mode:
+
+- Creates a simple table structure with only timestamp (`t`), hash (`h`), and JSON data (`data`) columns
+- Stores the entire JSON array as a single JSON column in DuckDB
+- Avoids binding errors when objects have different numbers of keys
+- Allows you to query the JSON data using DuckDB's native JSON functions
+
+This is particularly useful when your JSON file structure evolves over time in your git history.
 
 ## Development
 

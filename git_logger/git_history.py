@@ -20,12 +20,13 @@ def run_cbs(cbs:list, method_nm:str, data):
 
 class GitLogger:
     def __init__(self, db_name:str, table_name:str, filepath:str, repo_path:str = ".",
-                 data_type:str = "json", cbs:list = None):
+                 data_type:str = "json", cbs:list = None, flexible_schema:bool = False):
         self.db_name = db_name
         self.table_name = table_name
         self.filepath = filepath
         self.repo_path = repo_path
         self.data_type = data_type
+        self.flexible_schema = flexible_schema
         self.db_tbl_exist = self._db_and_table_exist()
         self.parse_func = json.loads if data_type == "json" else parse_csv
         self.con = None
@@ -67,13 +68,21 @@ class GitLogger:
         Accepts both lists of lists (which will be saved to a csv file) or list of dictionaries (which will be saved to a json file).
         """
         if self.data_type == "json":
-            with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
-                json.dump(data, f)
-                fname = f.name
+            if self.flexible_schema:
+                # Store the entire JSON data as a single JSON column
+                json_data = json.dumps(data)
+                con.execute(f"INSERT INTO {self.table_name} (t, h, data) VALUES (?, ?, ?)", 
+                           [timestamp, hash, json_data])
+            else:
+                # Original logic for structured schema
+                with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
+                    json.dump(data, f)
+                    fname = f.name
 
-            con.sql(f"select '{timestamp}' stime, '{hash}' hash, * from read_json('{fname}')").insert_into(self.table_name)
-            os.remove(fname)
+                con.sql(f"select '{timestamp}' stime, '{hash}' hash, * from read_json('{fname}')").insert_into(self.table_name)
+                os.remove(fname)
         else:
+            # CSV data handling (unchanged)
             with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
                 writer = csv.writer(f)
                 writer.writerows(data)
@@ -93,12 +102,17 @@ class GitLogger:
             if i == 0:
                 # import pdb; pdb.set_trace()
                 if not self.db_tbl_exist:
-                    if self.data_type == "json":
-                        db_schema = parse_schema(self.data[0])
+                    if self.flexible_schema and self.data_type == "json":
+                        # Create simple table with timestamp, hash, and JSON data column
+                        self.con.sql(f"CREATE TABLE {self.table_name} (t timestamp, h varchar, data JSON)")
                     else:
-                        db_schema = parse_schema({k:v for k,v in zip(self.data[0], self.data[1])})
-                    
-                    self.con.sql(f"CREATE TABLE {self.table_name} ({'t timestamp, h varchar,'+','.join([f'{k} {v}' for k,v in db_schema.items()])})")
+                        # Original logic for structured schema
+                        if self.data_type == "json":
+                            db_schema = parse_schema(self.data[0])
+                        else:
+                            db_schema = parse_schema({k:v for k,v in zip(self.data[0], self.data[1])})
+                        
+                        self.con.sql(f"CREATE TABLE {self.table_name} ({'t timestamp, h varchar,'+','.join([f'{k} {v}' for k,v in db_schema.items()])})")
                 
                 # self.insert_to_duckdb(data=data, timestamp=git_version[0], hash=git_version[1], con=self.con)
             self.insert_to_duckdb(data=self.data, timestamp=git_version[0], hash=git_version[1], con=self.con)
