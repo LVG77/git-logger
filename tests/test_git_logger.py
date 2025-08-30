@@ -140,3 +140,42 @@ def test_git_logger_callback(tmpdir, git_repo):
     assert len(line_counter_callback.line_counts) == 2
     assert line_counter_callback.line_counts[0] == 2
     assert line_counter_callback.line_counts[1] == 3
+
+def test_git_logger_csv_columns(tmpdir, git_repo):
+    # Create a CSV file and commit it twice
+    csv_file = (tmpdir / "data.csv")
+    data = [["First Name", "Age"], ["Alice", "30"], ["Bob", "40"]]
+    with open(csv_file, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
+
+    git_repo.git.checkout('-b', 'main')  # Create and checkout the 'main' branch
+    git_repo.index.add([csv_file])
+    git_repo.index.commit("First commit")
+
+    data.append(["Charlie", "50"])
+    with open(csv_file, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
+
+    git_repo.index.add([csv_file])
+    git_repo.index.commit("Second commit")
+
+    # Test the GitLogger with the CSV file
+    db_name = str(tmpdir / "test.db")
+    table_name = "my_table"
+    filepath = csv_file
+    repo_path = str(tmpdir)
+    data_type = "csv"
+
+    logger = GitLogger(db_name, table_name, filepath, repo_path, data_type)
+    logger.log_git_history()
+
+    # Check that the data was inserted correctly
+    with duckdb.connect(db_name) as con:
+        result = con.sql(f"SELECT * FROM {table_name}").fetchall()
+        assert len(result) == 5
+        assert set(row[2] for row in result) == {"Alice", "Bob", "Charlie"}
+
+        # Check that the column names were parsed correctly
+        assert set(col[1] for col in con.execute(f"PRAGMA table_info({table_name})").fetchall()) == {"t", "h", "First_Name", "Age"}

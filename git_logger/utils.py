@@ -4,6 +4,8 @@ import duckdb
 
 def parse_schema(d: dict):
     parsed_data = {}
+    # fix column names
+    d = {k.replace(' ','_'): v for k, v in d.items()}
     for key, value in d.items():
         try:
             _ = int(value)

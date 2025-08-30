@@ -1,6 +1,6 @@
 [project]
 name = "git-logger"
-version = "0.2"
+version = "0.3"
 description = "Log preserved history contents of csv or json file in duckdb"
 readme = "README.md"
 requires-python = ">=3.10"
